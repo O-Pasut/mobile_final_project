@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_final_project/home_page.dart';
+import 'package:mobile_final_project/Homepage/home_page.dart';
 import 'package:mobile_final_project/navbar/navbar.dart';
 import 'package:mobile_final_project/favourite_page.dart';
 import 'package:mobile_final_project/Store/all_stores.dart';
@@ -33,7 +33,6 @@ class _NavbarControlState extends State<NavbarControl> {
     return Scaffold(
       body: Stack(
         children: [
-          // Use IndexedStack to preserve page state and prevent rebuilding
           IndexedStack(index: _selectedIndex, children: _pages),
           Positioned(
             bottom: 0,

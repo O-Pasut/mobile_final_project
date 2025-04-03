@@ -152,7 +152,7 @@ class MainTemplate extends StatelessWidget {
             width: width,
             height: height * 0.86,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 105, 70, 172).withOpacity(0.1),
+              color: Colors.transparent,
               borderRadius: BorderRadius.vertical(top: Radius.circular(45)),
               border: Border.all(
                 color: Colors.white.withOpacity(0.3),
@@ -162,14 +162,9 @@ class MainTemplate extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                (icon != null && label != null)
-                    ? _buildHeader(icon, label)
-                    : SizedBox.shrink(),
-
+                if (icon != null && label != null) _buildHeader(icon, label),
                 const SizedBox(height: 5),
-                Expanded(
-                  child: body ?? SizedBox.shrink(),
-                ), // Store list remains
+                Expanded(child: body ?? SizedBox.shrink()),
               ],
             ),
           ),

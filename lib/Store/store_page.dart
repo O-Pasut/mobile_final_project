@@ -36,7 +36,7 @@ class _StorePageState extends State<StorePage> {
     try {
       final response = await http.get(
         Uri.parse(
-          'https://api.rawg.io/api/games?key=09a0ff6332b442c3aae64869ed59163c&page_size=13&stores=${widget.id}',
+          'https://api.rawg.io/api/games?key=09a0ff6332b442c3aae64869ed59163c&page_size=9&stores=${widget.id}',
         ),
       );
 
@@ -158,12 +158,7 @@ class _StorePageState extends State<StorePage> {
   Widget _buildHeader(double width) => Row(
     children: [
       SizedBox(width: width * 0.03),
-      const CircleAvatar(
-        radius: 20,
-        backgroundImage: NetworkImage(
-          "https://cdn.brandfetch.io/idMpZmhn_O/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B",
-        ),
-      ),
+      Icon(Icons.gamepad_rounded, color: Colors.white, size: 40),
       const SizedBox(width: 20),
       Text(
         widget.name,

@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'dart:convert';
+import 'package:mobile_final_project/game_detail.dart';
+
 import '../model/game.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -306,7 +308,21 @@ class _StorePageState extends State<StorePage> {
       itemBuilder: (context, index) {
         final game = games[index];
         return GestureDetector(
-          onTap: () => print("Clicked on ${game.slug}"),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => GameDetailDialog(
+                    slug: game.slug,
+                    name: game.name,
+                    released: game.released,
+                    imageBackground: game.imageBackground,
+                    rating: game.rating,
+                    ratingTop: game.ratingTop,
+                  ),
+            );
+          },
+
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),

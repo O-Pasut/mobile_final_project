@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mobile_final_project/game_detail.dart';
 import '../model/game.dart';
 
 class GameList extends StatefulWidget {
@@ -74,8 +75,20 @@ class _GameListState extends State<GameList> {
                         padding: EdgeInsets.only(left: index == 0 ? 0 : 16),
                         child: GestureDetector(
                           onTap: () {
-                            // Handle game click
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => GameDetailDialog(
+                                    slug: game.slug,
+                                    name: game.name,
+                                    released: game.released,
+                                    imageBackground: game.imageBackground,
+                                    rating: game.rating,
+                                    ratingTop: game.ratingTop,
+                                  ),
+                            );
                           },
+
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Stack(

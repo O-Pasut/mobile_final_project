@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 
 class GameDetailDialog extends StatelessWidget {
-  const GameDetailDialog({super.key});
+  final String slug;
+  final String name;
+  final String released;
+  final String imageBackground;
+  final double rating;
+  final int ratingTop;
+  const GameDetailDialog({
+    super.key,
+    required this.slug,
+    required this.name,
+    required this.released,
+    required this.imageBackground,
+    required this.rating,
+    required this.ratingTop,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +38,7 @@ class GameDetailDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Custom Dialog',
-              style: TextStyle(fontSize: 22, color: Colors.white),
-            ),
+            Text(name, style: TextStyle(fontSize: 22, color: Colors.white)),
             const SizedBox(height: 10),
             const Text(
               'This is a decorated dialog box.',

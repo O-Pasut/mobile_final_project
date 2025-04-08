@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'dart:convert';
-import '../model/games_for_store.dart';
+import '../model/game.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,7 +22,7 @@ class StorePage extends StatefulWidget {
 
 class _StorePageState extends State<StorePage> {
   int activeButtonIndex = 0;
-  List<GamesForStore> stores = [];
+  List<Game> games = [];
   bool isLoaded = false;
   String errorMessage = '';
 
@@ -44,9 +44,9 @@ class _StorePageState extends State<StorePage> {
         final data = jsonDecode(response.body);
         if (mounted) {
           setState(() {
-            stores =
+            games =
                 (data['results'] as List)
-                    .map((item) => GamesForStore.fromJson(item))
+                    .map((item) => Game.fromJson(item))
                     .toList();
             isLoaded = true;
           });
@@ -276,56 +276,83 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
-  Widget _buildGameList() => GridView.builder(
-    padding: EdgeInsets.all(10),
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      childAspectRatio: 3 / 2,
-    ),
-    itemCount: stores.length,
-    itemBuilder: (context, index) {
-      final platform = stores[index];
-      return GestureDetector(
-        onTap: () => print("Clicked on ${platform.slug}"),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CachedNetworkImage(
-                  imageUrl: platform.imageBackground,
-                  fit: BoxFit.cover,
-                  placeholder:
-                      (context, url) => Container(color: Colors.grey[300]),
-                  errorWidget:
-                      (context, url, error) =>
-                          const Icon(Icons.error, color: Colors.red),
-                ),
-                Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: Text(
-                      platform.name,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
+  Widget _buildGameList() {
+    if (!isLoaded) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
+    if (games.isEmpty) {
+      return const Center(
+        child: Text(
+          "No games available.",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      padding: EdgeInsets.all(10),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 3 / 2,
+      ),
+      itemCount: games.length,
+      itemBuilder: (context, index) {
+        final game = games[index];
+        return GestureDetector(
+          onTap: () => print("Clicked on ${game.slug}"),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: game.imageBackground,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (context, url) => const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        ),
+                    errorWidget:
+                        (context, url, error) => Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.error, color: Colors.red),
+                        ),
+                  ),
+                  Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: Center(
+                      child: Text(
+                        game.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
+  }
 }

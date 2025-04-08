@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/games_for_store.dart';
+import '../model/game.dart';
 import 'package:flutter/material.dart';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,7 +13,7 @@ class ImageSlider extends StatefulWidget {
 }
 
 class _ImageSliderState extends State<ImageSlider> {
-  List<GamesForStore> stores = [];
+  List<Game> games = [];
   bool isLoaded = false;
   String errorMessage = '';
 
@@ -35,9 +35,9 @@ class _ImageSliderState extends State<ImageSlider> {
         final data = jsonDecode(response.body);
         if (mounted) {
           setState(() {
-            stores =
+            games =
                 (data['results'] as List)
-                    .map((item) => GamesForStore.fromJson(item))
+                    .map((item) => Game.fromJson(item))
                     .toList();
             isLoaded = true;
           });
@@ -68,7 +68,7 @@ class _ImageSliderState extends State<ImageSlider> {
           isLoaded
               ? AnotherCarousel(
                 images:
-                    stores.map((game) {
+                    games.map((game) {
                       return SizedBox(
                         width: double.infinity,
                         height: 250, // Keep height fixed

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_final_project/Homepage/game_list.dart';
 import 'package:mobile_final_project/Homepage/image_slider.dart';
 import 'package:mobile_final_project/main_template.dart';
 
@@ -26,6 +27,19 @@ class HomePage extends StatelessWidget {
               fontSize: 20,
             ),
           ),
+          SizedBox(height: 10),
+          GameList(startIndex: 0),
+          SizedBox(height: 20),
+          const Text(
+            "Recommend",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 10),
+          GameList(startIndex: 3),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_final_project/game_detail.dart';
 import 'package:mobile_final_project/main_template.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -86,7 +87,12 @@ class _FavouritePageState extends State<FavouritePage> {
       itemBuilder: (context, index) {
         final game = games[index];
         return GestureDetector(
-          onTap: () => print("Clicked on ${game['slug']}"),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => GameDetail(slug: game['slug']),
+            );
+          },
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),

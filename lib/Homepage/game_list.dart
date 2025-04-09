@@ -77,15 +77,7 @@ class _GameListState extends State<GameList> {
                           onTap: () {
                             showDialog(
                               context: context,
-                              builder:
-                                  (context) => GameDetailDialog(
-                                    slug: game.slug,
-                                    name: game.name,
-                                    released: game.released,
-                                    imageBackground: game.imageBackground,
-                                    rating: game.rating,
-                                    ratingTop: game.ratingTop,
-                                  ),
+                              builder: (context) => GameDetail(slug: game.slug),
                             );
                           },
 
@@ -98,25 +90,6 @@ class _GameListState extends State<GameList> {
                                   width: 120,
                                   height: 160,
                                   fit: BoxFit.cover,
-                                  placeholder:
-                                      (context, url) => Container(
-                                        width: 120,
-                                        height: 160,
-                                        color: Colors.grey[300],
-                                        child: const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      ),
-                                  errorWidget:
-                                      (context, url, error) => Container(
-                                        width: 120,
-                                        height: 160,
-                                        color: Colors.grey[300],
-                                        child: const Icon(
-                                          Icons.error,
-                                          size: 50,
-                                        ),
-                                      ),
                                 ),
                                 Positioned(
                                   bottom: 0,

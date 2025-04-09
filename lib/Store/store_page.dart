@@ -97,7 +97,6 @@ class _StorePageState extends State<StorePage> {
           ),
           _buildBlurLayer(size.height, 25, 55, 0.2),
           _buildMainLayer(size.width, size.height * 0.88),
-          // Navbar(width: size.width, height: size.height),
         ],
       ),
     );
@@ -311,15 +310,7 @@ class _StorePageState extends State<StorePage> {
           onTap: () {
             showDialog(
               context: context,
-              builder:
-                  (context) => GameDetailDialog(
-                    slug: game.slug,
-                    name: game.name,
-                    released: game.released,
-                    imageBackground: game.imageBackground,
-                    rating: game.rating,
-                    ratingTop: game.ratingTop,
-                  ),
+              builder: (context) => GameDetail(slug: game.slug),
             );
           },
 

@@ -7,7 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class FavouritePage extends StatefulWidget {
   const FavouritePage({super.key});
-
   @override
   State<FavouritePage> createState() => _FavouritePageState();
 }
@@ -23,38 +22,28 @@ class _FavouritePageState extends State<FavouritePage> {
   }
 
   Future<void> fetchFavourite() async {
-    setState(() {
-      isLoaded = false;
-    });
+    setState(() => isLoaded = false);
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8001/games'));
-      if (response.statusCode == 200) {
+      final res = await http.get(Uri.parse('http://10.0.2.2:8001/games'));
+      if (res.statusCode == 200) {
         setState(() {
-          games = jsonDecode(response.body);
+          games = jsonDecode(res.body);
           isLoaded = true;
         });
       } else {
         throw Exception("Failed to load games");
       }
-    } catch (e) {
-      setState(() {
-        isLoaded = true;
-      });
+    } catch (_) {
+      setState(() => isLoaded = true);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MainTemplate(
-      icon: Icons.star,
-      label: "Favourites",
-      body: _favouriteBody(),
-    );
-  }
-
-  Widget _favouriteBody() {
-    return Column(children: [Expanded(child: _buildGameList())]);
-  }
+  Widget build(BuildContext context) => MainTemplate(
+    icon: Icons.star,
+    label: "Favourites",
+    body: Column(children: [Expanded(child: _buildGameList())]),
+  );
 
   Widget _buildGameList() {
     if (!isLoaded) {
@@ -64,7 +53,6 @@ class _FavouritePageState extends State<FavouritePage> {
         ),
       );
     }
-
     if (games.isEmpty) {
       return const Center(
         child: Text(
@@ -83,15 +71,14 @@ class _FavouritePageState extends State<FavouritePage> {
         childAspectRatio: 3 / 2,
       ),
       itemCount: games.length,
-      itemBuilder: (context, index) {
-        final game = games[index];
+      itemBuilder: (context, i) {
+        final game = games[i];
         return GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) => GameDetail(slug: game['slug']),
-            );
-          },
+          onTap:
+              () => showDialog(
+                context: context,
+                builder: (_) => GameDetail(slug: game['slug']),
+              ),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -105,7 +92,7 @@ class _FavouritePageState extends State<FavouritePage> {
                     imageUrl: game['imageBackground'] ?? '',
                     fit: BoxFit.cover,
                     placeholder:
-                        (context, url) => const Center(
+                        (_, __) => const Center(
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Colors.white,
@@ -113,7 +100,7 @@ class _FavouritePageState extends State<FavouritePage> {
                           ),
                         ),
                     errorWidget:
-                        (context, url, error) => Container(
+                        (_, __, ___) => Container(
                           color: Colors.grey[300],
                           child: const Icon(Icons.error, color: Colors.red),
                         ),

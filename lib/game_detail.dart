@@ -16,6 +16,7 @@ class GameDetail extends StatefulWidget {
 
 class _GameDetailState extends State<GameDetail> {
   bool isLoaded = false;
+  bool isInDatabase = false;
   Game? game;
   String errorMessage = '';
 
@@ -33,8 +34,11 @@ class _GameDetailState extends State<GameDetail> {
         ),
       );
       if (res.statusCode == 200) {
+        final fetchedGame = Game.fromJson(jsonDecode(res.body));
+        final exists = await checkGameExists(widget.slug);
         setState(() {
-          game = Game.fromJson(jsonDecode(res.body));
+          game = fetchedGame;
+          isInDatabase = exists;
           isLoaded = true;
         });
       } else {
@@ -44,6 +48,65 @@ class _GameDetailState extends State<GameDetail> {
       setState(() {
         errorMessage = e.toString();
         isLoaded = false;
+      });
+    }
+  }
+
+  Future<bool> checkGameExists(String slug) async {
+    try {
+      final response = await http.get(
+        Uri.parse("http://10.0.2.2:8001/games/exists/$slug"),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['exists'] == true;
+      } else {
+        throw Exception("Failed to check existence");
+      }
+    } catch (e) {
+      print("Error: $e");
+      return false;
+    }
+  }
+
+  Future<void> addToFavourite() async {
+    try {
+      var response = await http.post(
+        Uri.parse("http://10.0.2.2:8001/games"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(game?.toJson()),
+      );
+      if (response.statusCode == 201) {
+        setState(() {
+          isInDatabase = true;
+        });
+      } else {
+        throw Exception("Failed to add to favourite");
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+        isLoaded = false;
+      });
+    }
+  }
+
+  Future<void> deleteFromFavourite() async {
+    try {
+      final response = await http.delete(
+        Uri.parse("http://10.0.2.2:8001/games/${widget.slug}"),
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          isInDatabase = false;
+        });
+      } else {
+        throw Exception("Failed to remove from favourite");
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
       });
     }
   }
@@ -120,7 +183,7 @@ class _GameDetailState extends State<GameDetail> {
           const SizedBox(height: 5),
           ReadMoreText(
             game!.description ?? '',
-            trimLines: 8,
+            trimLines: 7,
             trimMode: TrimMode.Line,
             trimCollapsedText: "  Read more",
             trimExpandedText: "  Show less",
@@ -144,7 +207,7 @@ class _GameDetailState extends State<GameDetail> {
                     width: 200,
                     child: Text(
                       game!.platforms!.join(', '),
-                      style: TextStyle(color: Colors.green),
+                      style: const TextStyle(color: Colors.green),
                     ),
                   ),
                 ],
@@ -177,7 +240,7 @@ class _GameDetailState extends State<GameDetail> {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
               Column(
@@ -186,7 +249,7 @@ class _GameDetailState extends State<GameDetail> {
                   Text("Released Date", style: labelStyle()),
                   const SizedBox(height: 5),
                   SizedBox(
-                    height: 50,
+                    height: 15,
                     width: 200,
                     child: Text(
                       formatDate(game!.released),
@@ -197,6 +260,27 @@ class _GameDetailState extends State<GameDetail> {
                     ),
                   ),
                 ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  if (!isInDatabase) {
+                    addToFavourite();
+                  } else {
+                    deleteFromFavourite(); // If it's already in the database, delete it
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isInDatabase ? Colors.green : null,
+                ),
+                child: Text(
+                  isInDatabase ? "Remove from Favourite" : "Add to Favourite",
+                ),
               ),
             ],
           ),
@@ -222,7 +306,7 @@ class _GameDetailState extends State<GameDetail> {
   );
 
   TextStyle labelStyle() {
-    return TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+    return const TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
   }
 
   TextStyle purpleLinkStyle() => const TextStyle(

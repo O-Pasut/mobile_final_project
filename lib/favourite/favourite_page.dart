@@ -19,10 +19,10 @@ class _FavouritePageState extends State<FavouritePage> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchFavourite();
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchFavourite() async {
     setState(() {
       isLoaded = false;
     });

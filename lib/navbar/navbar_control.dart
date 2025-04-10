@@ -17,12 +17,17 @@ class _NavbarControlState extends State<NavbarControl> {
   final List<Widget> _pages = [
     const HomePage(),
     const AllStores(),
-    const FavouritePage(),
+    FavouritePage(key: UniqueKey()), // Use key to rebuild when selected
   ];
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
+      // If FavouritePage is selected, rebuild it by giving a new UniqueKey
+      if (index == 2) {
+        _pages[2] = FavouritePage(key: UniqueKey());
+      }
     });
   }
 

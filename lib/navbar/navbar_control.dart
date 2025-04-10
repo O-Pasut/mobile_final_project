@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_final_project/Homepage/home_page.dart';
-import 'package:mobile_final_project/navbar/navbar.dart';
+import 'package:mobile_final_project/Navbar/navbar.dart';
 import 'package:mobile_final_project/favourite/favourite_page.dart';
 import 'package:mobile_final_project/Store/all_stores.dart';
 

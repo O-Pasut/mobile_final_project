@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:mobile_final_project/game_detail.dart';
-import '../model/game.dart';
+import 'package:mobile_final_project/GameDetail/game_detail.dart';
+import '../Model/game.dart';
 
 class GameList extends StatefulWidget {
   final int startIndex;

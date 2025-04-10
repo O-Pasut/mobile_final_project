@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile_final_project/main_template.dart';
 import 'package:mobile_final_project/Store/store_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:mobile_final_project/model/game_stores.dart';
+import 'package:mobile_final_project/Model/game_stores.dart';
 
 class AllStores extends StatefulWidget {
   const AllStores({super.key});

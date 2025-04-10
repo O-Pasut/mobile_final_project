@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'dart:convert';
-import 'package:mobile_final_project/game_detail.dart';
+import 'package:mobile_final_project/GameDetail/game_detail.dart';
 
-import '../model/game.dart';
+import '../Model/game.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';

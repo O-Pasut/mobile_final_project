@@ -26,10 +26,8 @@ class _GameDetailState extends State<GameDetail> {
   Future<void> fetchData() async {
     try {
       final fetchedGame = await GameService.fetchGame(widget.slug);
-      final exists = await GameService.checkGameExists(widget.slug);
       setState(() {
         game = fetchedGame;
-        isInDatabase = exists;
         isLoaded = true;
       });
     } catch (e) {
@@ -60,7 +58,7 @@ class _GameDetailState extends State<GameDetail> {
         ),
         child:
             isLoaded && game != null
-                ? GameInfoSection(game: game, isInDatabase: isInDatabase)
+                ? GameInfoSection(game: game)
                 : buildLoadingOrError(),
       ),
     );

@@ -37,7 +37,6 @@ class _FavouritePageState extends State<FavouritePage> {
         throw Exception("Failed to load games");
       }
     } catch (e) {
-      print(e);
       setState(() {
         isLoaded = true;
       });

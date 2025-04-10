@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_final_project/Homepage/game_list.dart';
-import 'package:mobile_final_project/Homepage/image_slider.dart';
+import 'package:mobile_final_project/homepage/game_list.dart';
+import 'package:mobile_final_project/homepage/image_slider.dart';
 import 'package:mobile_final_project/main_template.dart';
 
 class HomePage extends StatelessWidget {

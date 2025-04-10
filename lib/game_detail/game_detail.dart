@@ -1,8 +1,7 @@
-// game_detail.dart
 import 'package:flutter/material.dart';
-import 'package:mobile_final_project/GameDetail/game_info_section.dart';
+import 'package:mobile_final_project/game_detail/game_info_section.dart';
 import 'package:mobile_final_project/model/game.dart';
-import 'package:mobile_final_project/GameDetail/game_service.dart';
+import 'package:mobile_final_project/game_detail/game_service.dart';
 
 class GameDetail extends StatefulWidget {
   final String slug;

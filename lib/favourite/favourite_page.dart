@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile_final_project/GameDetail/game_detail.dart';
+import 'package:mobile_final_project/game_detail/game_detail.dart';
 import 'package:mobile_final_project/main_template.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 

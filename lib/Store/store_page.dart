@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'dart:convert';
-import 'package:mobile_final_project/GameDetail/game_detail.dart';
+import 'package:mobile_final_project/game_detail/game_detail.dart';
 
 import '../Model/game.dart';
 import 'package:flutter/material.dart';

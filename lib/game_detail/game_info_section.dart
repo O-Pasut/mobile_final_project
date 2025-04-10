@@ -1,6 +1,5 @@
-// game_info_section.dart
 import 'package:flutter/material.dart';
-import 'package:mobile_final_project/GameDetail/game_service.dart';
+import 'package:mobile_final_project/game_detail/game_service.dart';
 import 'package:mobile_final_project/model/game.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';

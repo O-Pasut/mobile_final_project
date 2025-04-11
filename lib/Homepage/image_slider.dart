@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../Model/game.dart';
 import 'package:flutter/material.dart';
-import 'package:another_carousel_pro/another_carousel_pro.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile_final_project/model/game.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:another_carousel_pro/another_carousel_pro.dart';
 
 class ImageSlider extends StatefulWidget {
   const ImageSlider({super.key});
@@ -13,16 +13,17 @@ class ImageSlider extends StatefulWidget {
 }
 
 class _ImageSliderState extends State<ImageSlider> {
-  List<Game> games = [];
-  bool isLoaded = false;
-  String errorMessage = '';
+  List<Game> games = []; // เก็บรายการเกมที่โหลดมา
+  bool isLoaded = false; // ตรวจสอบว่าโหลดเสร็จหรือยัง
+  String errorMessage = ''; // ใช้เก็บข้อความเมื่อเกิดข้อผิดพลาด
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // เรียกข้อมูลเกมเมื่อเริ่มต้นหน้า
   }
 
+  // ฟังก์ชันโหลดข้อมูลเกมจาก RAWG API
   Future<void> fetchData() async {
     try {
       final response = await http.get(
@@ -36,7 +37,7 @@ class _ImageSliderState extends State<ImageSlider> {
         if (mounted) {
           setState(() {
             games =
-                (data['results'] as List)
+                (data['results'] as List) // แปลงข้อมูล JSON เป็น Game
                     .map((item) => Game.fromJson(item))
                     .toList();
             isLoaded = true;
@@ -58,7 +59,7 @@ class _ImageSliderState extends State<ImageSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 250, // Ensure the container maintains size
+      height: 250,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -66,16 +67,17 @@ class _ImageSliderState extends State<ImageSlider> {
       ),
       child:
           isLoaded
+              // ใช้ AnotherCarousel เพื่อทำ ImageSlider
               ? AnotherCarousel(
                 images:
                     games.map((game) {
                       return SizedBox(
                         width: double.infinity,
-                        height: 250, // Keep height fixed
+                        height: 250,
                         child: Stack(
-                          fit: StackFit.expand, // Ensure it takes full space
+                          fit: StackFit.expand,
                           children: [
-                            // ✅ Cached Image with Placeholder
+                            // รูปเกมแบบโหลดล่วงหน้าด้วย cached_network_image
                             ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: CachedNetworkImage(
@@ -100,7 +102,7 @@ class _ImageSliderState extends State<ImageSlider> {
                               ),
                             ),
 
-                            // ✅ Overlay with Name & Rating
+                            // ชื่อเกม + คะแนน อยู่ด้านล่างของภาพ
                             Positioned(
                               bottom: 0,
                               left: 0,
@@ -117,7 +119,7 @@ class _ImageSliderState extends State<ImageSlider> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // Game Name
+                                    // ชื่อเกม (ตัดข้อความถ้ายาวเกิน)
                                     Expanded(
                                       child: Text(
                                         game.name,
@@ -130,7 +132,7 @@ class _ImageSliderState extends State<ImageSlider> {
                                       ),
                                     ),
 
-                                    // Rating Display
+                                    // แสดงคะแนน rating เกม
                                     Row(
                                       children: [
                                         const Icon(
@@ -156,13 +158,13 @@ class _ImageSliderState extends State<ImageSlider> {
                         ),
                       );
                     }).toList(),
-                showIndicator: false,
+                showIndicator: false, // ไม่แสดงจุดบอกตำแหน่งของหน้าสไลด์
                 borderRadius: true,
                 radius: Radius.circular(20),
               )
               : const Center(
-                child: CircularProgressIndicator(),
-              ), // Show loading spinner while fetching data
+                child: CircularProgressIndicator(), // แสดงตัวหมุนโหลดข้อมูล
+              ),
     );
   }
 }

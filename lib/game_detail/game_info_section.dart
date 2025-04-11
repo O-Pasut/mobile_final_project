@@ -1,9 +1,9 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_final_project/game_detail/game_service.dart';
+import 'package:readmore/readmore.dart';
 import 'package:mobile_final_project/model/game.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
-import 'package:readmore/readmore.dart';
+import 'package:mobile_final_project/game_detail/game_service.dart';
 
 class GameInfoSection extends StatefulWidget {
   final Game? game;
@@ -14,15 +14,17 @@ class GameInfoSection extends StatefulWidget {
 }
 
 class _GameInfoSectionState extends State<GameInfoSection> {
-  bool isInDatabase = false;
-  String errorMessage = '';
+  bool isInDatabase =
+      false; // ตรวจสอบว่าเกมนี้อยู่ในฐานข้อมูล (favourite) หรือยัง
+  String errorMessage = ''; // เก็บข้อความ error ถ้าเกิดข้อผิดพลาด
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // เรียกฟังก์ชันตรวจสอบสถานะเกมในฐานข้อมูลเมื่อ widget ถูกสร้าง
   }
 
+  // ฟังก์ชันเรียก API เพื่อตรวจสอบว่าเกมอยู่ใน favourite หรือยัง
   Future<void> fetchData() async {
     try {
       final exists = await GameService.checkGameExists(widget.game!.slug);
@@ -31,17 +33,19 @@ class _GameInfoSectionState extends State<GameInfoSection> {
       });
     } catch (e) {
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = e.toString(); // ถ้า error เก็บข้อความไว้
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // ใช้ ScrollView เพื่อให้เลื่อนดูข้อมูลได้
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // แถวแรก: วันที่เปิดตัวเกมครั้งแรก และเวลาเล่นเฉลี่ย
           Row(
             children: [
               Container(
@@ -64,6 +68,8 @@ class _GameInfoSectionState extends State<GameInfoSection> {
             ],
           ),
           const SizedBox(height: 10),
+
+          // ชื่อเกม
           Text(
             widget.game!.name,
             style: const TextStyle(
@@ -73,6 +79,8 @@ class _GameInfoSectionState extends State<GameInfoSection> {
             ),
           ),
           const SizedBox(height: 10),
+
+          // รูปพื้นหลังเกม
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: CachedNetworkImage(
@@ -83,6 +91,8 @@ class _GameInfoSectionState extends State<GameInfoSection> {
             ),
           ),
           const SizedBox(height: 10),
+
+          // หัวข้อ About (คำอธิบายเกี่ยวกับเกม)
           const Text(
             "About",
             style: TextStyle(
@@ -92,12 +102,16 @@ class _GameInfoSectionState extends State<GameInfoSection> {
             ),
           ),
           const SizedBox(height: 5),
+
+          // คำอธิบายเกม แบบย่อ / ขยายได้
           ReadMoreText(
             widget.game!.description ?? '',
-            trimLines: 7,
+            trimLines: 7, // ตัดข้อความให้เริ่มต้นอยู่ที่ 7 บรรทัด
             trimMode: TrimMode.Line,
-            trimCollapsedText: "  Read more",
-            trimExpandedText: "  Show less",
+            trimCollapsedText:
+                "  Read more", // ข้อความที่แสดงเพื่อต้องการอ่านเพิ่ม
+            trimExpandedText:
+                "  Show less", // ข้อความที่แสดงเพื่อย่อกลับไปเหลือเท่าเดิม
             textAlign: TextAlign.justify,
             style: const TextStyle(color: Colors.white),
             moreStyle: TextStyle(
@@ -112,6 +126,8 @@ class _GameInfoSectionState extends State<GameInfoSection> {
             ),
           ),
           const SizedBox(height: 20),
+
+          // ข้อมูล platforms และ metascore
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -127,7 +143,7 @@ class _GameInfoSectionState extends State<GameInfoSection> {
                     child: Text(
                       widget.game!.platforms!.join(', '),
                       style: const TextStyle(
-                        color: Colors.lightGreen,
+                        color: Colors.lightGreenAccent,
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),
@@ -148,13 +164,13 @@ class _GameInfoSectionState extends State<GameInfoSection> {
                     ),
                     decoration: BoxDecoration(
                       color: Colors.black,
-                      border: Border.all(color: Colors.lightGreen),
+                      border: Border.all(color: Colors.lightGreenAccent),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Text(
                       intCheck(widget.game?.metascore.toString()),
                       style: const TextStyle(
-                        color: Colors.lightGreen,
+                        color: Colors.lightGreenAccent,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -163,6 +179,8 @@ class _GameInfoSectionState extends State<GameInfoSection> {
               ),
             ],
           ),
+
+          // วันที่เปิดตัวเกมครั้งแรก
           Row(
             children: [
               Column(
@@ -176,7 +194,7 @@ class _GameInfoSectionState extends State<GameInfoSection> {
                     child: Text(
                       formatDate(widget.game!.released),
                       style: TextStyle(
-                        color: Colors.lightGreen,
+                        color: Colors.lightGreenAccent,
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),
@@ -186,21 +204,26 @@ class _GameInfoSectionState extends State<GameInfoSection> {
               ),
             ],
           ),
+
+          // ปุ่ม Add / Remove จาก Favourite
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
                 onPressed: () async {
+                  // ถ้ายังไม่อยู่ใน database -> เพิ่มเข้าไป
                   if (!isInDatabase) {
                     await GameService.addToFavourite(widget.game!);
-                    fetchData();
+                    fetchData(); // รีเฟรชสถานะหลังเพิ่ม
                   } else {
+                    // ถ้าอยู่แล้ว -> ลบออก
                     await GameService.deleteFromFavourite(widget.game!.slug);
-                    fetchData();
+                    fetchData(); // รีเฟรชสถานะหลังลบ
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isInDatabase ? Colors.green : null,
+                  backgroundColor:
+                      isInDatabase ? Colors.lightGreenAccent : null,
                 ),
                 child: Text(
                   isInDatabase ? "Remove from Favourite" : "Add to Favourite",
@@ -213,11 +236,14 @@ class _GameInfoSectionState extends State<GameInfoSection> {
     );
   }
 
+  // แปลงวันที่เป็น format ที่ต้องการ เช่น Apr 10, 2025
   String formatDate(String rawDate) =>
       DateFormat('MMM d, y').format(DateTime.parse(rawDate));
 
+  // TextStyle ที่ใช้เหมือนกัน เช่น Platforms, Metascore
   TextStyle labelStyle() =>
       TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16);
 
+  // ตรวจสอบว่าเป็นเลขจริงหรือไม่ ถ้า null ให้แสดง "N/A"
   String intCheck(String? s) => (s ?? "N/A");
 }

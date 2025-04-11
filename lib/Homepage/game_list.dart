@@ -1,12 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mobile_final_project/model/game.dart';
 import 'package:mobile_final_project/game_detail/game_detail.dart';
-import '../Model/game.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class GameList extends StatefulWidget {
-  final int startIndex;
+  final int startIndex; // ใช้กำหนดว่าจะเริ่มแสดงรายการเกมจาก index ไหน
 
   const GameList({super.key, required this.startIndex});
 
@@ -15,16 +15,17 @@ class GameList extends StatefulWidget {
 }
 
 class _GameListState extends State<GameList> {
-  List<Game> games = [];
-  bool isLoaded = false;
-  String errorMessage = '';
+  List<Game> games = []; // เก็บข้อมูลเกมที่โหลดมาจาก API
+  bool isLoaded = false; // ตรวจสอบว่าโหลดข้อมูลเสร็จหรือยัง
+  String errorMessage = ''; // เก็บข้อความ error ถ้ามี
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // เรียกโหลดข้อมูลทันทีเมื่อ widget สร้างเสร็จ
   }
 
+  // ดึงข้อมูลเกมจาก RAWG API
   Future<void> fetchData() async {
     try {
       final response = await http.get(
@@ -37,6 +38,7 @@ class _GameListState extends State<GameList> {
         final data = jsonDecode(response.body);
         if (mounted) {
           setState(() {
+            // แปลง JSON ที่ได้เป็น list ของ Game
             games =
                 (data['results'] as List)
                     .map((item) => Game.fromJson(item))
@@ -75,22 +77,24 @@ class _GameListState extends State<GameList> {
                         padding: EdgeInsets.only(left: index == 0 ? 0 : 16),
                         child: GestureDetector(
                           onTap: () {
+                            // เมื่อกดที่เกม จะแสดงรายละเอียดเกมใน dialog
                             showDialog(
                               context: context,
                               builder: (context) => GameDetail(slug: game.slug),
                             );
                           },
-
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Stack(
                               children: [
+                                // แสดงภาพพื้นหลังของเกม
                                 CachedNetworkImage(
                                   imageUrl: game.imageBackground,
                                   width: 120,
                                   height: 160,
                                   fit: BoxFit.cover,
                                 ),
+                                // แถบสีดำพร้อมชื่อเกมอยู่ด้านล่างของรูป
                                 Positioned(
                                   bottom: 0,
                                   left: 0,
@@ -118,7 +122,7 @@ class _GameListState extends State<GameList> {
                   )
                   : ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 5,
+                    itemCount: 5, // จำนวน placeholder ขณะโหลด
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: EdgeInsets.only(left: index == 0 ? 0 : 16),
@@ -129,9 +133,9 @@ class _GameListState extends State<GameList> {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(12),
                           ),
+                          // แสดง loading spinner
                           child: const Center(
-                            child:
-                                CircularProgressIndicator(), // Circle Loading
+                            child: CircularProgressIndicator(),
                           ),
                         ),
                       );

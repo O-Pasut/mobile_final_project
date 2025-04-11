@@ -1,11 +1,10 @@
 import 'dart:ui';
 import 'dart:convert';
-import 'package:mobile_final_project/game_detail/game_detail.dart';
-
-import '../Model/game.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_final_project/model/game.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mobile_final_project/game_detail/game_detail.dart';
 
 class StorePage extends StatefulWidget {
   final int id;
@@ -23,17 +22,19 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage> {
-  int activeButtonIndex = 0;
-  List<Game> games = [];
-  bool isLoaded = false;
-  String errorMessage = '';
+  int activeButtonIndex =
+      0; // ตำแหน่งปุ่มที่ถูกเลือก (Top Sellers: 0, Free to Play: 1, Early Access: 2)
+  List<Game> games = []; // รายชื่อเกมที่โหลดมาจาก API
+  bool isLoaded = false; // สถานะว่าโหลดข้อมูลเสร็จหรือยัง
+  String errorMessage = ''; // ข้อความแสดงข้อผิดพลาด
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // โหลดข้อมูลเกมที่ขายในหน้านั้นเมื่อหน้าถูกสร้าง
   }
 
+  // ดึงข้อมูลเกมจาก RAWG API ตามร้านค้าที่เลือก
   Future<void> fetchData() async {
     try {
       final response = await http.get(
@@ -92,16 +93,20 @@ class _StorePageState extends State<StorePage> {
       ),
       body: Stack(
         children: [
+          // ภาพพื้นหลัง
           Positioned.fill(
             child: Image.asset("assets/bg.jpg", fit: BoxFit.cover),
           ),
+          // ชั้นเบลอ
           _buildBlurLayer(size.height, 25, 55, 0.2),
+          // เนื้อหาหลัก
           _buildMainLayer(size.width, size.height * 0.88),
         ],
       ),
     );
   }
 
+  // สร้างชั้นเบลอแบบโค้ง
   Widget _buildBlurLayer(
     double height,
     double blur,
@@ -124,7 +129,7 @@ class _StorePageState extends State<StorePage> {
       ),
     ),
   );
-
+  // สร้างคอนเทนต์หลักที่อยู่เหนือชั้นเบลอ
   Widget _buildMainLayer(double width, double height) => Positioned(
     bottom: 0,
     child: ClipRRect(
@@ -156,6 +161,7 @@ class _StorePageState extends State<StorePage> {
     ),
   );
 
+  // แสดงหัวร้านค้าและไอคอน
   Widget _buildHeader(double width) => Row(
     children: [
       SizedBox(width: width * 0.03),
@@ -172,6 +178,7 @@ class _StorePageState extends State<StorePage> {
     ],
   );
 
+  // แสดงรูปภาพร้านค้า
   Widget _buildGameBanner(double width, double height) {
     return Container(
       width: width,
@@ -182,6 +189,7 @@ class _StorePageState extends State<StorePage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
+            // โหลดภาพพื้นหลังร้าน
             CachedNetworkImage(
               imageUrl:
                   widget.imageBackground.isNotEmpty
@@ -195,6 +203,7 @@ class _StorePageState extends State<StorePage> {
               fadeInDuration: const Duration(milliseconds: 500),
               fadeInCurve: Curves.easeIn,
             ),
+            // เพิ่ม gradient ให้ตัวอักษรอ่านง่าย
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -204,6 +213,7 @@ class _StorePageState extends State<StorePage> {
                 ),
               ),
             ),
+            // ใส่ข้อความทับไว้บนภาพ
             Positioned(
               bottom: 15,
               left: 20,
@@ -236,6 +246,7 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
+  // แถบปุ่มเลือกสถานะเกม
   Widget _buildButtonRow() {
     List<String> labels = ["Top Sellers", "Free to Play", "Early Access"];
     return Row(
@@ -247,6 +258,7 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
+  // จัดการปุ่มสถานะแต่ละอัน
   Widget _buildStatusButton(int index, String label) {
     bool isActive = activeButtonIndex == index;
     return TextButton(
@@ -265,7 +277,6 @@ class _StorePageState extends State<StorePage> {
                   : null,
           color: isActive ? null : Colors.white.withOpacity(0.1),
         ),
-        alignment: Alignment.center,
         child: Text(
           label,
           style: TextStyle(
@@ -277,6 +288,7 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
+  // แสดงรายการเกมในรูปแบบ Grid
   Widget _buildGameList() {
     if (!isLoaded) {
       return const Center(
@@ -294,18 +306,18 @@ class _StorePageState extends State<StorePage> {
         ),
       );
     }
-
     return GridView.builder(
       padding: EdgeInsets.all(10),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 3 / 2,
+        crossAxisCount: 2, // แสดง 2 คอลัมน์
+        crossAxisSpacing: 10, // ระยะห่างระหว่างคอลัมน์
+        mainAxisSpacing: 10, // ระยะห่างแนวตั้ง
+        childAspectRatio: 3 / 2, // สัดส่วนของกรอบร้าน
       ),
       itemCount: games.length,
       itemBuilder: (context, index) {
         final game = games[index];
+        // แสดง Dialog ข้อมูลของเกมที่เลือก
         return GestureDetector(
           onTap: () {
             showDialog(
@@ -313,7 +325,6 @@ class _StorePageState extends State<StorePage> {
               builder: (context) => GameDetail(slug: game.slug),
             );
           },
-
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -323,6 +334,7 @@ class _StorePageState extends State<StorePage> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
+                  // รูปภาพของเกม
                   CachedNetworkImage(
                     imageUrl: game.imageBackground,
                     fit: BoxFit.cover,
@@ -340,6 +352,7 @@ class _StorePageState extends State<StorePage> {
                           child: const Icon(Icons.error, color: Colors.red),
                         ),
                   ),
+                  // ชื่อเกม
                   Container(
                     color: Colors.black.withOpacity(0.5),
                     child: Center(

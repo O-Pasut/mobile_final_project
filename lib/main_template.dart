@@ -12,21 +12,28 @@ class MainTemplate extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Stack(
+      // ใช้เป็น Stack เพื่อต้องการให้แต่ละส่วนซ้อนทับกัน
       children: [
-        Positioned.fill(child: Image.asset("assets/bg.jpg", fit: BoxFit.cover)),
-        _blurLayer(size),
-        _profile(size),
-        _mainLayer(size),
+        Positioned.fill(
+          child: Image.asset("assets/bg.jpg", fit: BoxFit.cover),
+        ), // ใส่พื้นหลังให้เต็มจอ
+        _blurLayer(size), // เพิ่มชั้นเบลอ เพื่อเบลอพื้นหลัง
+        _profile(size), // โปรไฟล์ของผู้ใช้ด้านบนซ้าย
+        _mainLayer(size), // ส่วนหลักของหน้า ประกอบด้วย icon, label และ body
       ],
     );
   }
 
+  // สร้างชั้นเบลอครอบพื้นหลัง พร้อมสีพื้นบาง ๆ
   Widget _blurLayer(Size s) => Positioned(
     bottom: 0,
     child: ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(55)),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+        filter: ImageFilter.blur(
+          sigmaX: 25,
+          sigmaY: 25,
+        ), // ส่วนที่ทำให้เกิดความเบลอ
         child: Container(
           width: s.width,
           height: s.height,
@@ -39,11 +46,13 @@ class MainTemplate extends StatelessWidget {
     ),
   );
 
+  // แสดงโปรไฟล์ผู้ใช้งาน (รูปโปรไฟล์ + ชื่อผู้ใช้ + อีเมลผู้ใช้)
   Widget _profile(Size s) => Positioned(
     top: s.height * 0.07,
     left: s.width * 0.07,
     child: Row(
       children: [
+        // รูปโปรไฟล์ (กรอบ + Icon)
         Container(
           width: 45,
           height: 45,
@@ -65,6 +74,7 @@ class MainTemplate extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
+            // ชื่อผู้ใช้
             Text(
               'Username',
               style: TextStyle(
@@ -73,6 +83,7 @@ class MainTemplate extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            // อีเมลผู้ใช้
             Text(
               'Email',
               style: TextStyle(color: Colors.white70, fontSize: 12),
@@ -83,12 +94,18 @@ class MainTemplate extends StatelessWidget {
     ),
   );
 
+  // ส่วนหลักของหน้า
   Widget _mainLayer(Size s) => Positioned(
     bottom: 0,
     child: ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(45)),
+      borderRadius: const BorderRadius.vertical(
+        top: Radius.circular(45),
+      ), // สร้างกรอบของหน้าหลักโค้งแค่ด้านบน
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        filter: ImageFilter.blur(
+          sigmaX: 15,
+          sigmaY: 15,
+        ), // ในความเบลอให้พื้นหลังของส่วนหลัก
         child: Container(
           width: s.width,
           height: s.height * 0.86,
@@ -100,6 +117,7 @@ class MainTemplate extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              // แสดง Icon และหัวข้อของหน้าที่ต้องการแสดง
               if (icon != null && label != null)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +135,10 @@ class MainTemplate extends StatelessWidget {
                   ],
                 ),
               const SizedBox(height: 5),
-              Expanded(child: body ?? const SizedBox.shrink()),
+              // แสดงเนื้อหาหลักที่ส่งเข้ามา
+              Expanded(
+                child: body ?? const SizedBox.shrink(),
+              ), // ถ้าไม่มี body มาจะแทนด้วย SizedBox ที่เล็กที่สุด
             ],
           ),
         ),

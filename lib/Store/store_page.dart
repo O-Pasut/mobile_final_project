@@ -314,9 +314,9 @@ class _StorePageState extends State<StorePage> {
         mainAxisSpacing: 10, // ระยะห่างแนวตั้ง
         childAspectRatio: 3 / 2, // สัดส่วนของกรอบร้าน
       ),
-      itemCount: games.length,
+      itemCount: games.length - activeButtonIndex,
       itemBuilder: (context, index) {
-        final game = games[index];
+        final game = games[index + activeButtonIndex];
         // แสดง Dialog ข้อมูลของเกมที่เลือก
         return GestureDetector(
           onTap: () {
